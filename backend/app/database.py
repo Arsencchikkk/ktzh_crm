@@ -1,3 +1,5 @@
+import certifi
+
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.config import settings
 
@@ -7,7 +9,7 @@ _client: AsyncIOMotorClient | None = None
 def get_client() -> AsyncIOMotorClient:
     global _client
     if _client is None:
-        _client = AsyncIOMotorClient(settings.MONGODB_URL)
+        _client = AsyncIOMotorClient(settings.MONGODB_URL, tlsCAFile=certifi.where())
     return _client
 
 
