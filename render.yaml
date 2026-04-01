@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: ktzh-backend
+    env: python # Нативно Python (лучше и быстрее чем Docker для бесплатного тарифа)
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: MONGODB_URL
+        sync: false
+      - key: MONGODB_DB
+        value: ktzh_crm
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WAZZUP_API_KEY
+        sync: false
+      - key: WAZZUP_CHANNEL_ID
+        sync: false
+      - key: CORS_ORIGINS
+        value: '["https://ktzh-frontend.onrender.com"]'
+
+  - type: web
+    name: ktzh-frontend
+    env: node # Нативно Node.js
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 20
+      - key: NEXT_PUBLIC_API_URL
+        value: https://ktzh-backend.onrender.com
+      - key: NEXT_PUBLIC_WS_URL
+        value: wss://ktzh-backend.onrender.com
